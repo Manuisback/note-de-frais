@@ -94,7 +94,7 @@ symfony server:start
 
 
 Le dossier `vendor` n’est pas versionné.
-Après récupération du projet, il faut obligatoirement exécuter :
+n'oubliez pas d'installer :
 
 ```bash
 composer install
