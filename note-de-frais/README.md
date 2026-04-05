@@ -92,10 +92,9 @@ symfony server:start
 - amélioration du design et de la mise en page du PDF
 - meilleure gestion des statuts de validation
 
-## Important
 
-Le dossier `vendor` n’est pas versionné sur GitHub.
-Après récupération du projet, il faut donc obligatoirement exécuter :
+Le dossier `vendor` n’est pas versionné.
+Après récupération du projet, il faut obligatoirement exécuter :
 
 ```bash
 composer install
