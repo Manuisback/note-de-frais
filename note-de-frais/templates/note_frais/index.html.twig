@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Note de frais</title>
+    <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
+</head>
+<body>
+
+<main class="page">
+
+    <section class="formulaire-note">
+
+    
+      <header class="entete">
+        <h1 class="titre-page">NOTE DE FRAIS</h1>
+
+        <p class="texte-entete">
+          Merci d’éviter au maximum les notes de frais, et de privilégier les règlements directs tant que possible.<br />
+          Le club a la possibilité de payer par virement, prélèvement et par Paypal.<br />
+          Vous pouvez vous rapprocher du trésorier pour toute question.
+        </p>
+      </header>
+
+      
+      <form id="formNote" method="post" enctype="multipart/form-data">
+
+        <section class="bloc">
+          <h2 class="titre-bloc">Informations générales</h2>
+
+          <div class="grille">
+            <div class="champ">
+              <label for="nomDemandeur">Nom du demandeur</label>
+              <input type="text" id="nomDemandeur" name="nomDemandeur" required />
+            </div>
+
+            <div class="champ">
+              <label for="dateDemande">Date de la demande</label>
+              <input type="date" id="dateDemande" name="dateDemande" required />
+            </div>
+
+            <div class="champ">
+              <label for="typeDemande">Type de demande</label>
+              <select id="typeDemande" name="typeDemande" required>
+                <option value="note">Note de frais</option>
+                <option value="abandon">Abandon de frais</option>
+              </select>
+            </div>
+
+            <div class="champ">
+              <label for="budget">Budget</label>
+              <select id="budget" name="budget" required>
+                <option value="">les budget</option>
+                <option value="administratif">Administratif</option>
+                <option value="bibliotheque">Bibliothèque</option>
+                <option value="formation">Formation</option>
+                <option value="matos-explo-speleo-canyon">Matos Explo / Spéléo / Canyon</option>
+                <option value="matos-autre">Matos autre</option>
+                <option value="weekends-sorties">Week-ends et sorties</option>
+              </select>
+            </div>
+
+            <div class="champ">
+              <label for="budgetRestant">Budget restant</label>
+              <input
+                type="text"
+                id="budgetRestant"
+                name="budgetRestant"
+                value="les montants dans la base plus tard"
+                readonly
+              />
+            </div>
+
+            <div class="champ champ-large">
+              <label for="raisonDepense">Raison de la dépense</label>
+              <textarea
+                id="raisonDepense"
+                name="raisonDepense"
+                rows="4"
+                required
+              ></textarea>
+            </div>
+          </div>
+        </section>
+
+        
+        
+
+        
+        <section class="bloc">
+          <div class="ligne-titre">
+            <h2 class="titre-bloc">Détail des dépenses</h2>
+            <button type="button" id="btnAjouterDepense">+ Ajouter une dépense</button>
+          </div>
+
+          <div id="listeDepenses" class="liste-depenses">
+
+            <!-- mon form de depense -->
+            <article class="carte-depense">
+              <div class="haut-carte">
+                <h3 class="titre-carte">Dépense 1</h3>
+                <button type="button" class="btnSupprimer">Supprimer</button>
+              </div>
+
+              <div class="grille">
+                <div class="champ">
+                  <label>Date de la dépense</label>
+                  <input type="date" name="dateDepense[]" />
+                </div>
+
+                <div class="champ">
+                  <label>Objet de la dépense</label>
+                  <input
+                    type="text"
+                    name="objetDepense[]"
+                    placeholder="pourquoi tu veux des sous..."
+                  />
+                </div>
+
+                <div class="champ">
+                  <label>Kilomètres</label>
+                  <input
+                    type="number"
+                    name="kmDepense[]"
+                    class="input-km"
+                    min="0"
+                    step="0.1"
+                  />
+                </div>
+
+                <div class="champ">
+                  <label>Type de barème km</label>
+                  <select name="typeBareme[]" class="select-bareme">
+                    <option value="">...</option>
+                  </select>
+                </div>
+
+                <div class="champ">
+                  <label>Taux km</label>
+                  <input
+                    type="text"
+                    name="tauxKm[]"
+                    class="input-taux-km"
+                    value="0.000"
+                    readonly
+                  />
+                </div>
+
+                <div class="champ">
+                  <label>Montant km</label>
+                  <input
+                    type="text"
+                    name="montantKmLigne[]"
+                    class="montant-km-ligne"
+                    value="0.00"
+                    readonly
+                  />
+                </div>
+
+                <div class="champ">
+                  <label>Péages / transports</label>
+                  <input
+                    type="number"
+                    name="transportDepense[]"
+                    class="input-transport"
+                    min="0"
+                    step="0.01"
+                    placeholder="ment pas stp"
+                  />
+                </div>
+
+                <div class="champ">
+                  <label>Autres</label>
+                  <input
+                    type="number"
+                    name="autreDepense[]"
+                    class="input-autre"
+                    min="0"
+                    step="0.01"
+                    placeholder=""
+                  />
+                </div>
+
+                <div class="champ">
+                  <label>Total de la ligne</label>
+                  <input
+                    type="text"
+                    name="totalLigne[]"
+                    class="total-ligne"
+                    value="0.00"
+                    readonly
+                  />
+                </div>
+              </div>
+            </article>
+
+          </div>
+        </section>
+
+        <section class="bloc">
+          <h2 class="titre-bloc">Totaux</h2>
+
+          <div class="grille">
+            <div class="champ">
+              <label for="totalKm">Total km</label>
+              <input type="text" id="totalKm" name="totalKm" value="0.0" readonly />
+            </div>
+
+            <div class="champ">
+              <label for="montantKm">Montant kilométrique</label>
+              <input type="text" id="montantKm" name="montantKm" value="0.00" readonly />
+            </div>
+
+            <div class="champ">
+              <label for="totalTransport">Total péages / transports</label>
+              <input type="text" id="totalTransport" name="totalTransport" value="0.00" readonly />
+            </div>
+
+            <div class="champ">
+              <label for="totalAutre">Total autres</label>
+              <input type="text" id="totalAutre" name="totalAutre" value="0.00" readonly />
+            </div>
+
+            <div class="champ">
+              <label for="totalGeneral">Total des frais</label>
+              <input type="text" id="totalGeneral" name="totalGeneral" value="0.00" readonly />
+            </div>
+          </div>
+        </section>
+
+        <section class="bloc">
+          <h2 class="titre-bloc">Remboursement</h2>
+
+          <div class="grille">
+            <div class="champ">
+              <label for="montantAbandon">Montant abandonné</label>
+              <input
+                type="number"
+                id="montantAbandon"
+                name="montantAbandon"
+                min="0"
+                step="0.01"
+                value="0"
+              />
+            </div>
+
+            <div class="champ">
+              <label for="montantRembourse">Montant souhaité en remboursement</label>
+              <input
+                type="text"
+                id="montantRembourse"
+                name="montantRembourse"
+                value="0.00"
+                readonly
+              />
+            </div>
+          </div>
+        </section>
+
+<section class="bloc">
+          <h2 class="titre-bloc">Justificatifs</h2>
+
+          <p class="texte-info">
+            Joindre obligatoirement un scan ou les originaux des justificatifs.
+            Seules les dépenses avec justificatifs pourront être remboursées.
+          </p>
+
+          <div class="champ">
+            <label for="piecesJointes">Ajouter des documents</label>
+            <input
+              type="file"
+              id="piecesJointes"
+              name="piecesJointes[]"
+              accept=".pdf,.jpg,.jpeg,.png"
+              multiple
+              required
+            />
+          </div>
+        </section>
+        
+        <section class="bloc">
+          <h2 class="titre-bloc">Coordonnées bancaires</h2>
+
+          <div class="grille">
+            <div class="champ">
+              <label for="iban">IBAN</label>
+              <input type="text" id="iban" name="iban" placeholder="FR76 normalement c'est le debut" />
+            </div>
+
+            <div class="champ">
+              <label for="bic">BIC</label>
+              <input type="text" id="bic" name="bic" placeholder="" />
+            </div>
+          </div>
+        </section>
+
+        <section class="bloc">
+  <h2 class="titre-bloc">Signature du demandeur</h2>
+
+  <div class="zone-signature">
+    <canvas id="signaturePad" width="500" height="200"></canvas>
+  </div>
+
+  <input type="hidden" id="signatureData" name="signatureData">
+
+  <div class="actions-signature">
+    <button type="button" id="btnEffacerSignature">Effacer la signature</button>
+  </div>
+</section>
+
+
+        <section class="bloc">
+          <h2 class="titre-bloc">Validation</h2>
+
+          <div class="case-validation">
+            <input type="checkbox" id="confirmData" name="confirmData" required />
+            <label for="confirmData">
+              Je confirme que les informations renseignées sont exactes.
+            </label>
+          </div>
+
+          <div class="actions-form">
+            <button type="button" id="btnBrouillon">Enregistrer le brouillon</button>
+            <button type="button" id="btnApercu">Prévisualiser</button>
+            <button type="submit" id="btnEnvoyer">Envoyer la note de frais</button>
+          </div>
+        </section>
+
+      </form>
+    </section>
+  </main>
+
+<script src="{{ asset('assets/js/script.js') }}"></script>
+</body>
+</html>

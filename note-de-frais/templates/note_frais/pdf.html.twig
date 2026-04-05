@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>PDF note de frais</title>
+    <style>
+        body {
+            font-family: DejaVu Sans, sans-serif;
+            font-size: 12px;
+            color: #222;
+            padding: 20px;
+        }
+
+        h1, h2 {
+            margin-bottom: 12px;
+        }
+
+        .bloc {
+            margin-bottom: 20px;
+            padding: 12px;
+            border: 1px solid #ccc;
+        }
+
+        .ligne {
+            margin-bottom: 6px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: left;
+            font-size: 11px;
+        }
+
+        th {
+            background: #f3f3f3;
+        }
+
+        .justificatif {
+            margin-bottom: 16px;
+        }
+
+        .justificatif img {
+            max-width: 100%;
+            max-height: 500px;
+            display: block;
+            margin-top: 8px;
+            border: 1px solid #ccc;
+        }
+
+        .signature img {
+            max-width: 300px;
+            border: 1px solid #ccc;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Note de frais</h1>
+
+    <div class="bloc">
+        <h2>Informations générales</h2>
+        <div class="ligne"><strong>ID :</strong> {{ noteFrais.id }}</div>
+        <div class="ligne"><strong>Nom du demandeur :</strong> {{ noteFrais.nomDemandeur }}</div>
+        <div class="ligne"><strong>Date de demande :</strong> {{ noteFrais.dateDemande ? noteFrais.dateDemande|date('d/m/Y') : '' }}</div>
+        <div class="ligne"><strong>Budget :</strong> {{ noteFrais.budget ? noteFrais.budget.nom : '' }}</div>
+        <div class="ligne"><strong>Raison :</strong> {{ noteFrais.raisonDepense }}</div>
+        <div class="ligne"><strong>IBAN :</strong> {{ noteFrais.iban }}</div>
+        <div class="ligne"><strong>BIC :</strong> {{ noteFrais.bic }}</div>
+        <div class="ligne"><strong>Statut :</strong> {{ noteFrais.statut }}</div>
+    </div>
+
+    <div class="bloc">
+        <h2>Lignes de frais</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Objet</th>
+                    <th>Km</th>
+                    <th>Type barème</th>
+                    <th>Taux km</th>
+                    <th>Montant km</th>
+                    <th>Transport</th>
+                    <th>Autre</th>
+                    <th>Total ligne</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for ligne in lignes %}
+                    <tr>
+                        <td>{{ ligne.dateDepense ? ligne.dateDepense|date('d/m/Y') : '' }}</td>
+                        <td>{{ ligne.objetDepense }}</td>
+                        <td>{{ ligne.kilometres }}</td>
+                        <td>{{ ligne.typeBareme }}</td>
+                        <td>{{ ligne.tauxKm }}</td>
+                        <td>{{ ligne.montantKm }}</td>
+                        <td>{{ ligne.montantTransport }}</td>
+                        <td>{{ ligne.montantAutre }}</td>
+                        <td>{{ ligne.totalLigne }}</td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="9">Aucune ligne enregistrée.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="bloc">
+        <h2>Totaux</h2>
+        <div class="ligne"><strong>Total km :</strong> {{ noteFrais.totalKm }}</div>
+        <div class="ligne"><strong>Montant km :</strong> {{ noteFrais.montantKm }}</div>
+        <div class="ligne"><strong>Total transport :</strong> {{ noteFrais.totalTransport }}</div>
+        <div class="ligne"><strong>Total autre :</strong> {{ noteFrais.totalAutre }}</div>
+        <div class="ligne"><strong>Total général :</strong> {{ noteFrais.totalGeneral }}</div>
+        <div class="ligne"><strong>Montant abandonné :</strong> {{ noteFrais.montantAbandon }}</div>
+        <div class="ligne"><strong>Montant remboursé :</strong> {{ noteFrais.montantRembourse }}</div>
+    </div>
+
+    <div class="bloc">
+        <h2>Justificatifs</h2>
+
+        {% for justificatif in justificatifs %}
+            {% set extension = justificatif.nomFichier|split('.')|last|lower %}
+
+            <div class="justificatif">
+                <div><strong>{{ justificatif.nomFichier }}</strong></div>
+
+                {% if extension in ['jpg', 'jpeg', 'png'] %}
+                    <img src="{{ absolute_url(asset(justificatif.cheminFichier)) }}" alt="{{ justificatif.nomFichier }}">
+                {% else %}
+                    <div class="ligne">Fichier joint séparément : {{ justificatif.nomFichier }}</div>
+                {% endif %}
+            </div>
+        {% else %}
+            <div class="ligne">Aucun justificatif.</div>
+        {% endfor %}
+    </div>
+
+    <div class="bloc signature">
+        <h2>Signature</h2>
+
+        {% if signatureData %}
+            <img src="{{ signatureData }}" alt="Signature">
+        {% else %}
+            <div class="ligne">Aucune signature.</div>
+        {% endif %}
+    </div>
+</body>
+</html>

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Prévisualisation note de frais</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 30px;
+            color: #222;
+        }
+
+        h1, h2 {
+            margin-bottom: 16px;
+        }
+
+        .bloc {
+            margin-bottom: 24px;
+            padding: 16px;
+            border: 1px solid #ccc;
+        }
+
+        .ligne {
+            margin-bottom: 8px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 12px;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        th {
+            background: #f3f3f3;
+        }
+
+        a {
+            color: #0a58ca;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Prévisualisation de la note de frais</h1>
+
+    <div style="margin-bottom: 20px;">
+        <a href="{{ path('app_note_frais_pdf', { id: noteFrais.id }) }}" target="_blank">
+            Ouvrir le PDF
+        </a>
+    </div>
+
+    <div class="bloc">
+        <h2>Informations générales</h2>
+        <div class="ligne"><strong>ID :</strong> {{ noteFrais.id }}</div>
+        <div class="ligne"><strong>Nom du demandeur :</strong> {{ noteFrais.nomDemandeur }}</div>
+        <div class="ligne"><strong>Date de demande :</strong> {{ noteFrais.dateDemande ? noteFrais.dateDemande|date('d/m/Y') : '' }}</div>
+        <div class="ligne"><strong>Budget :</strong> {{ noteFrais.budget ? noteFrais.budget.nom : '' }}</div>
+        <div class="ligne"><strong>Raison :</strong> {{ noteFrais.raisonDepense }}</div>
+        <div class="ligne"><strong>IBAN :</strong> {{ noteFrais.iban }}</div>
+        <div class="ligne"><strong>BIC :</strong> {{ noteFrais.bic }}</div>
+        <div class="ligne"><strong>Statut :</strong> {{ noteFrais.statut }}</div>
+    </div>
+
+    <div class="bloc">
+        <h2>Lignes de frais</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Objet</th>
+                    <th>Km</th>
+                    <th>Type barème</th>
+                    <th>Taux km</th>
+                    <th>Montant km</th>
+                    <th>Transport</th>
+                    <th>Autre</th>
+                    <th>Total ligne</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for ligne in lignes %}
+                    <tr>
+                        <td>{{ ligne.dateDepense ? ligne.dateDepense|date('d/m/Y') : '' }}</td>
+                        <td>{{ ligne.objetDepense }}</td>
+                        <td>{{ ligne.kilometres }}</td>
+                        <td>{{ ligne.typeBareme }}</td>
+                        <td>{{ ligne.tauxKm }}</td>
+                        <td>{{ ligne.montantKm }}</td>
+                        <td>{{ ligne.montantTransport }}</td>
+                        <td>{{ ligne.montantAutre }}</td>
+                        <td>{{ ligne.totalLigne }}</td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="9">Aucune ligne enregistrée.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="bloc">
+        <h2>Totaux</h2>
+        <div class="ligne"><strong>Total km :</strong> {{ noteFrais.totalKm }}</div>
+        <div class="ligne"><strong>Montant km :</strong> {{ noteFrais.montantKm }}</div>
+        <div class="ligne"><strong>Total transport :</strong> {{ noteFrais.totalTransport }}</div>
+        <div class="ligne"><strong>Total autre :</strong> {{ noteFrais.totalAutre }}</div>
+        <div class="ligne"><strong>Total général :</strong> {{ noteFrais.totalGeneral }}</div>
+        <div class="ligne"><strong>Montant abandonné :</strong> {{ noteFrais.montantAbandon }}</div>
+        <div class="ligne"><strong>Montant remboursé :</strong> {{ noteFrais.montantRembourse }}</div>
+    </div>
+
+    <div class="bloc">
+        <h2>Justificatifs</h2>
+
+        {% for justificatif in justificatifs %}
+            <div class="ligne">
+                <a href="{{ asset(justificatif.cheminFichier) }}" target="_blank">
+                    {{ justificatif.nomFichier }}
+                </a>
+            </div>
+        {% else %}
+            <div class="ligne">Aucun justificatif.</div>
+        {% endfor %}
+    </div>
+</body>
+</html>
